@@ -1,14 +1,14 @@
 package services
 
 import (
+	"website-gin/dao"
 	"website-gin/models"
-	"website-gin/repositories"
 )
 
 func CreateUser(user models.User) models.User {
-	return repositories.CreateUser(user)
+	return dao.CreateUser(user)
 }
 
 func GetAllUsers() []models.User {
-	return repositories.GetAllUsers()
+	return dao.GetAllUsers()
 }

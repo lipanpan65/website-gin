@@ -1,4 +1,4 @@
-package repositories
+package dao
 
 import "website-gin/models"
 
