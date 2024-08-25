@@ -1,0 +1,8 @@
+app_mode: debug
+port: ":9001"
+
+db_user: root
+db_pass: '%aKyWJ9nesb2'
+db_name: website
+db_host: 127.0.0.1
+db_port: "13380"
