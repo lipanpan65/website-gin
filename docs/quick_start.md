@@ -294,3 +294,34 @@ json
 这个简单的项目展示了如何使用 Gin 框架构建一个结构良好的 Go Web API。你可以在此基础上根据实际需求进行扩展和优化。
 
 
+# 快速的搭建一个接口
+
+## 创建 model 类
+
+```shell
+package models
+
+type Topic struct {
+	ID        int    `json:"id" gorm:"primaryKey"`
+	TopicName string `json:"topic_name" gorm:"column:topic_name"`
+	Remark    string `json:"remark" gorm:"column:remark"`
+}
+
+// TableName 定义 GORM 表名为 tb_topics
+func (Topic) TableName() string {
+	return "tb_topics"
+}
+
+```
+
+## repositories
+```shell
+编写 repositories
+
+```
+
+
+
+
+
+
