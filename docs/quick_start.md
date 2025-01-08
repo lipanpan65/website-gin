@@ -23,7 +23,7 @@ my-gin-project/
 ├── controllers/
 ├── middlewares/
 ├── models/
-├── repositories/
+├── dao/
 ├── routes/
 ├── services/
 ├── utils/
@@ -43,7 +43,7 @@ my-gin-project/
 ├── controllers/
 ├── middlewares/
 ├── models/
-├── repositories/
+├── dao/
 ├── routes/
 ├── services/
 ├── utils/

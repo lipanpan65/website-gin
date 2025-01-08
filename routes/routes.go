@@ -7,16 +7,15 @@ import (
 
 func SetupRouter() *gin.Engine {
 	router := gin.Default()
-
 	//v1 := router.Group("/api/v1")
 	//{
 	//	v1.POST("/users", controllers.CreateUser)
 	//	v1.GET("/users", controllers.GetAllUsers)
 	//}
-
 	apiV1 := router.Group("/api/v1")
-	{
-		v1.RegisterUserRoutes(apiV1) // 注册 v1 版本的用户路由
+	{ // 注册 v1 版本的用户路由
+		v1.RegisterUserRoutes(apiV1)
+		v1.RegisterSubjectRoutes(apiV1)
 	}
 	return router
 }
