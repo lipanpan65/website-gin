@@ -21,10 +21,8 @@ func main() {
 	config.InitDB()
 	// 自动迁移数据库
 	// config.DB.AutoMigrate(&models.User{})
-
 	// 初始化路由
 	router := routes.SetupRouter()
-
 	// 使用配置中的 Port 启动服务器
 	err := router.Run(config.Conf.Port)
 	if err != nil {

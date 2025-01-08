@@ -28,3 +28,4 @@ go.work.sum
 
 
 /config/config-dev.yaml
+/config/config-prod.yaml

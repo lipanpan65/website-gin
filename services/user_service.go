@@ -2,13 +2,13 @@ package services
 
 import (
 	"website-gin/models"
-	"website-gin/repositories"
+	"website-gin/repository"
 )
 
 func CreateUser(user models.User) models.User {
-	return repositories.CreateUser(user)
+	return repository.CreateUser(user)
 }
 
 func GetAllUsers() []models.User {
-	return repositories.GetAllUsers()
+	return repository.GetAllUsers()
 }
