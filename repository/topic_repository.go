@@ -11,7 +11,6 @@ func CreateTopic(topic models.Topic) (models.Topic, error) {
 		return models.Topic{}, err
 	}
 	return topic, nil
-
 }
 
 func QueryTopics() ([]models.Topic, error) {
