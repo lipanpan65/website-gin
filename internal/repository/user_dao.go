@@ -1,6 +1,8 @@
 package repository
 
-import "website-gin/models"
+import (
+	"website-gin/internal/models"
+)
 
 var users []models.User
 

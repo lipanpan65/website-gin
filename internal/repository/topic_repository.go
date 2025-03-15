@@ -2,7 +2,7 @@ package repository
 
 import (
 	"website-gin/config"
-	"website-gin/models"
+	"website-gin/internal/models"
 )
 
 func CreateTopic(topic models.Topic) (models.Topic, error) {

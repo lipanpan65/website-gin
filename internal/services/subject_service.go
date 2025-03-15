@@ -1,8 +1,8 @@
 package services
 
 import (
-	"website-gin/models"
-	"website-gin/repository"
+	"website-gin/internal/models"
+	"website-gin/internal/repository"
 )
 
 func CreateSubject(subject *models.Subject) error {

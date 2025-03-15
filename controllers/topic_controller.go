@@ -3,9 +3,8 @@ package controllers
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"website-gin/repository"
-
-	"website-gin/models"
+	"website-gin/internal/models"
+	"website-gin/internal/repository"
 )
 
 func CreateTopic(ctx *gin.Context) {
@@ -26,5 +25,5 @@ func CreateTopic(ctx *gin.Context) {
 }
 
 func QueryTopic(ctx *gin.Context) {
-	
+
 }

@@ -2,7 +2,7 @@ package services
 
 import (
 	"fmt"
-	"website-gin/models"
+	"website-gin/internal/models"
 )
 
 func CreateTopic(topicVo models.TopicVo) (*models.TopicVo, error) {
