@@ -1,7 +1,5 @@
 package errors
 
-import "fmt"
-
 // ErrorType 错误类型
 type ErrorType string
 
@@ -18,10 +16,15 @@ type BaseError struct {
 	Type    ErrorType
 }
 
-func (b BaseError) Error() string {
-	//TODO implement me
-	//panic("implement me")
-	return fmt.Sprintf("error type: %s, code: %d, message: %s", b.Type, b.Code, b.Message)
+//func (b BaseError) Error() string {
+//	//TODO implement me
+//	//panic("implement me")
+//	return fmt.Sprintf("error type: %s, code: %d, message: %s", b.Type, b.Code, b.Message)
+//}
+
+// Error 实现 error 接口
+func (be *BaseError) Error() string {
+	return be.Message
 }
 
 // NewBusinessError 创建业务错误

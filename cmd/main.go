@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"website-gin/config"
+	"website-gin/middleware"
 	"website-gin/routes"
 )
 
@@ -34,6 +35,8 @@ func main() {
 
 	// 初始化路由
 	r := gin.Default()
+	// 使用全局异常处理中间件
+	r.Use(middleware.GlobalErrorHandler())
 	routes.SetupRouter(r, db)
 	log.Println("Routes initialized")
 
