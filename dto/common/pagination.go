@@ -1,6 +1,14 @@
 package common
 
-type PageDTO struct {
-	PageSize int `form:"page_size,default=10" json:"page_size"`
-	Page     int `form:"page,default=1" json:"page"`
+// PageInfo 分页信息
+type PageInfo struct {
+	Total    int `json:"total"`
+	Current  int `json:"current"`
+	PageSize int `json:"pageSize"`
+}
+
+// PagedData 分页数据
+type PagedData struct {
+	Page PageInfo    `json:"page"`
+	Data interface{} `json:"data"`
 }

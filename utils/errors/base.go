@@ -1,7 +1,5 @@
 package errors
 
-import "fmt"
-
 // ErrorType 错误类型
 type ErrorType string
 
@@ -13,19 +11,24 @@ const (
 
 // BaseError 基础错误结构体
 type BaseError struct {
-	Code    int
+	Code    string
 	Message string
 	Type    ErrorType
 }
 
-func (b BaseError) Error() string {
-	//TODO implement me
-	//panic("implement me")
-	return fmt.Sprintf("error type: %s, code: %d, message: %s", b.Type, b.Code, b.Message)
+//func (b BaseError) Error() string {
+//	//TODO implement me
+//	//panic("implement me")
+//	return fmt.Sprintf("error type: %s, code: %d, message: %s", b.Type, b.Code, b.Message)
+//}
+
+// Error 实现 error 接口
+func (be *BaseError) Error() string {
+	return be.Message
 }
 
 // NewBusinessError 创建业务错误
-func NewBusinessError(code int, message string) *BaseError {
+func NewBusinessError(code string, message string) *BaseError {
 	return &BaseError{
 		Code:    code,
 		Message: message,
@@ -34,7 +37,7 @@ func NewBusinessError(code int, message string) *BaseError {
 }
 
 // NewDomainError 创建领域错误
-func NewDomainError(code int, message string) *BaseError {
+func NewDomainError(code string, message string) *BaseError {
 	return &BaseError{
 		Code:    code,
 		Message: message,
@@ -43,7 +46,7 @@ func NewDomainError(code int, message string) *BaseError {
 }
 
 // NewTechnicalError 创建技术错误
-func NewTechnicalError(code int, message string) *BaseError {
+func NewTechnicalError(code string, message string) *BaseError {
 	return &BaseError{
 		Code:    code,
 		Message: message,

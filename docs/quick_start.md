@@ -21,7 +21,7 @@ my-gin-project/
 ├── cmd/
 ├── config/
 ├── controllers/
-├── middlewares/
+├── middleware/
 ├── models/
 ├── repository/
 ├── routes/
@@ -41,7 +41,7 @@ my-gin-project/
 ├── cmd/
 ├── config/
 ├── controllers/
-├── middlewares/
+├── middleware/
 ├── models/
 ├── repository/
 ├── routes/

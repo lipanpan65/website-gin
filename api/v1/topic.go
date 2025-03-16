@@ -14,7 +14,7 @@ func RegisterTopicRoutes(group *gin.RouterGroup, db *gorm.DB) {
 	topicController := controllers.NewTopicController(topicService)
 	topicsGroup := group.Group("/topics")
 	{
-		topicsGroup.GET("/", topicController.QueryTopic)
+		topicsGroup.GET("/", topicController.QueryTopics)
 		topicsGroup.POST("/", topicController.CreateTopic) // 创建用户
 	}
 }

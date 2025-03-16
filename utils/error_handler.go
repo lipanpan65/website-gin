@@ -3,12 +3,13 @@ package utils
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 	"website-gin/dto/response"
 	"website-gin/utils/errors"
 )
 
 func HandleError(ctx *gin.Context, err interface{}) {
-	var code int
+	var code string
 	var message string
 
 	switch e := err.(type) {
@@ -16,10 +17,10 @@ func HandleError(ctx *gin.Context, err interface{}) {
 		code = e.Code
 		message = e.Message
 	case string:
-		code = http.StatusBadRequest
+		code = strconv.Itoa(http.StatusBadRequest)
 		message = e
 	default:
-		code = http.StatusInternalServerError
+		code = strconv.Itoa(http.StatusInternalServerError)
 		message = "未知错误"
 	}
 

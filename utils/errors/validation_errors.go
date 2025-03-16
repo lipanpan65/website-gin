@@ -1,5 +1,5 @@
 package errors
 
 var (
-	InvalidParameter = NewBusinessError(400, "参数无效")
+	InvalidParameter = NewBusinessError("4000", "参数无效")
 )
