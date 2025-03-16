@@ -321,6 +321,98 @@ func (Topic) TableName() string {
 ```
 
 
+ResultSuccess
+```shell
+
+func someHandler(ctx *gin.Context) {
+    data := map[string]interface{}{
+        "key": "value",
+    }
+
+    // 正常使用
+    ResultSuccess(ctx, data)
+
+    // 定制消息
+    ResultSuccess(ctx, data, "自定义成功消息")
+
+    // 定制状态码
+    ResultSuccess(ctx, data, http.StatusCreated)
+
+    // 使用新的 BaseError 定制
+    customSuccess := errors.NewBusinessError(201, "业务定制成功消息")
+    ResultSuccess(ctx, data, customSuccess)
+}
+```
+
+模拟业务使用
+```shell
+package main
+
+import (
+    "github.com/gin-gonic/gin"
+    "website-gin/utils"
+    "website-gin/errors/application"
+)
+
+func main() {
+    r := gin.Default()
+
+    r.GET("/test-error", func(ctx *gin.Context) {
+        // 模拟业务错误
+        utils.ResultError(ctx, application.DictExisted)
+    })
+
+    r.Run(":8080")
+}
+```
+
+
+
+```shell
+
+func someHandler(ctx *gin.Context) {
+    // 假设在某个业务逻辑中出现了工作订单未找到的错误
+    err := errors.NewDomainError(404, "工单未找到")
+    utils.ResultError(ctx, err)
+}
+
+```
+
+```shell
+func anotherHandler(ctx *gin.Context) {
+    // 简单的错误信息
+    utils.ResultError(ctx, "输入参数无效")
+}
+
+```
+
+
+```shell
+func validateParams() gin.HandlerFunc {
+    return func(ctx *gin.Context) {
+        // 假设验证失败
+        if ctx.Query("param") == "" {
+            utils.ResultError(ctx, "缺少必要参数")
+            ctx.Abort()
+            return
+        }
+        ctx.Next()
+    }
+}
+
+func main() {
+    r := gin.Default()
+
+    r.GET("/protected", validateParams(), func(ctx *gin.Context) {
+        // 处理正常业务逻辑
+        ctx.JSON(http.StatusOK, gin.H{"message": "请求成功"})
+    })
+
+    r.Run(":8080")
+}
+```
+
+
 
 
 

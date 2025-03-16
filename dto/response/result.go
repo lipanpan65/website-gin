@@ -1,4 +1,4 @@
-package dto
+package response
 
 type Result struct {
 	Success bool        `json:"success"` // 请求是否成功

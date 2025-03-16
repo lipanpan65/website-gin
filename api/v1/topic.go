@@ -2,13 +2,19 @@ package v1
 
 import (
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 	"website-gin/controllers"
+	"website-gin/internal/repository"
+	"website-gin/internal/services"
 )
 
-func RegisterTopicRoutes(router *gin.RouterGroup) {
-	topicsGroup := router.Group("/topics")
+func RegisterTopicRoutes(group *gin.RouterGroup, db *gorm.DB) {
+	topicRepo := repository.NewTopicRepository(db)
+	topicService := services.NewTopicService(topicRepo)
+	topicController := controllers.NewTopicController(topicService)
+	topicsGroup := group.Group("/topics")
 	{
-		topicsGroup.GET("/", controllers.QueryTopic)
-		topicsGroup.POST("/", controllers.CreateTopic) // 创建用户
+		topicsGroup.GET("/", topicController.QueryTopic)
+		topicsGroup.POST("/", topicController.CreateTopic) // 创建用户
 	}
 }

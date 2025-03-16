@@ -10,6 +10,7 @@ import (
 	"gorm.io/gorm"
 	"log"
 	"os"
+	"time"
 )
 
 type Config struct {
@@ -79,16 +80,46 @@ func InitConfig() {
 	fmt.Printf("Loaded Config: %+v\n", Conf)
 }
 
-func InitDB() {
+func InitDB() (*gorm.DB, error) {
 	// 构建 MySQL 数据库连接字符串
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 		Conf.DBUser, Conf.DBPass, Conf.DBHost, Conf.DBPort, Conf.DBName)
 
 	var err error
-	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	DB, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Fatalf("failed to connect database: %v", err)
+		log.Printf("failed to connect database: %v", err)
+		return nil, err
 	}
+	// 配置连接池
+	sqlDB, err := DB.DB()
+	if err != nil {
+		log.Printf("failed to get SQL database instance: %v", err)
+		return nil, err
+	}
+
+	// 设置最大打开连接数
+	sqlDB.SetMaxOpenConns(100)
+	// 设置最大空闲连接数
+	sqlDB.SetMaxIdleConns(10)
+	// 设置连接的最大存活时间
+	sqlDB.SetConnMaxLifetime(time.Minute * 30)
+
+	// 测试数据库连接
+	err = sqlDB.Ping()
+	if err != nil {
+		log.Printf("failed to ping database: %v", err)
+		return nil, err
+	}
+
+	log.Println("successfully connected to database")
+	return DB, nil
+
+	//var err error
+	//DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
+	//if err != nil {
+	//	log.Fatalf("failed to connect database: %v", err)
+	//}
 }
 
 //GOOS=linux GOARCH=amd64 go build -o website-gin main.go
