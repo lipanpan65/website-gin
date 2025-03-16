@@ -7,8 +7,6 @@ import (
 )
 
 func SetupRouter(r *gin.Engine, db *gorm.DB) *gin.Engine {
-	//router := gin.Default()
-	//apiV1 := router.Group("/api/v1")
 	apiV1 := r.Group("/api/v1")
 	{ // 注册 v1 版本的用户路由
 		v1.RegisterUserRoutes(apiV1)

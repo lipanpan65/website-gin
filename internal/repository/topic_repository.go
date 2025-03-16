@@ -3,7 +3,6 @@ package repository
 import (
 	"errors"
 	"gorm.io/gorm"
-	"website-gin/config"
 	"website-gin/internal/models"
 )
 
@@ -11,9 +10,28 @@ type TopicRepository struct {
 	db *gorm.DB
 }
 
+// 校验分页参数
+func validatePaginationParams(page, pageSize int) (int, int) {
+	if page < 1 {
+		page = 1
+	}
+	if pageSize < 1 {
+		pageSize = 10
+	}
+	return page, pageSize
+}
+
+// 构建查询条件
+func buildQuery(query *gorm.DB, conditions map[string]interface{}) *gorm.DB {
+	for key, value := range conditions {
+		query = query.Where(key+" = ?", value)
+	}
+	return query
+}
+
 func NewTopicRepository(db *gorm.DB) *TopicRepository {
 	return &TopicRepository{
-		db: config.DB,
+		db: db,
 	}
 }
 
@@ -23,17 +41,35 @@ func (r *TopicRepository) CreateTopic(topic *models.Topic) error {
 }
 
 // QueryTopics 根据条件查询 Topic
-func (r *TopicRepository) QueryTopics(conditions map[string]interface{}) ([]models.Topic, error) {
+func (r *TopicRepository) QueryTopics(conditions map[string]interface{}, page, pageSize int) ([]models.Topic, int, error) {
 	var topics []models.Topic
+	var total int64
+
+	// 校验分页参数
+	page, pageSize = validatePaginationParams(page, pageSize)
+
+	// 构建基础查询
 	query := r.db
-	for key, value := range conditions {
-		query = query.Where(key+" = ?", value)
-	}
-	err := query.Find(&topics).Error
+
+	// 添加查询条件
+	query = buildQuery(query, conditions)
+
+	// 查询总记录数
+	err := query.Model(&models.Topic{}).Count(&total).Error
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
-	return topics, nil
+
+	// 计算偏移量
+	offset := (page - 1) * pageSize
+
+	// 应用分页
+	err = query.Offset(offset).Limit(pageSize).Find(&topics).Error
+	if err != nil {
+		return nil, 0, err
+	}
+
+	return topics, int(total), nil
 }
 
 // QueryTopicByID 根据ID查询 Topic

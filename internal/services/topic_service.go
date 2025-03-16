@@ -59,3 +59,7 @@ func (s *TopicService) QueryTopicByID(id uint) (*vo.TopicVo, error) {
 	}
 	return topicVo, nil
 }
+
+func (s *TopicService) QueryTopics(conditions map[string]interface{}, page, pageSize int) ([]models.Topic, int, error) {
+	return s.topicRepo.QueryTopics(conditions, page, pageSize)
+}

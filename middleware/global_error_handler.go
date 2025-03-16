@@ -18,9 +18,9 @@ func GlobalErrorHandler() gin.HandlerFunc {
 				case error:
 					err = v
 				case string:
-					err = customErrors.NewTechnicalError(500, v)
+					err = customErrors.NewTechnicalError("500", v)
 				default:
-					err = customErrors.NewTechnicalError(500, "未知错误")
+					err = customErrors.NewTechnicalError("9999", "未知错误")
 				}
 
 				var baseErr *customErrors.BaseError

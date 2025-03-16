@@ -11,7 +11,7 @@ const (
 
 // BaseError 基础错误结构体
 type BaseError struct {
-	Code    int
+	Code    string
 	Message string
 	Type    ErrorType
 }
@@ -28,7 +28,7 @@ func (be *BaseError) Error() string {
 }
 
 // NewBusinessError 创建业务错误
-func NewBusinessError(code int, message string) *BaseError {
+func NewBusinessError(code string, message string) *BaseError {
 	return &BaseError{
 		Code:    code,
 		Message: message,
@@ -37,7 +37,7 @@ func NewBusinessError(code int, message string) *BaseError {
 }
 
 // NewDomainError 创建领域错误
-func NewDomainError(code int, message string) *BaseError {
+func NewDomainError(code string, message string) *BaseError {
 	return &BaseError{
 		Code:    code,
 		Message: message,
@@ -46,7 +46,7 @@ func NewDomainError(code int, message string) *BaseError {
 }
 
 // NewTechnicalError 创建技术错误
-func NewTechnicalError(code int, message string) *BaseError {
+func NewTechnicalError(code string, message string) *BaseError {
 	return &BaseError{
 		Code:    code,
 		Message: message,
