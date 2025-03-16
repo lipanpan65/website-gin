@@ -3,7 +3,7 @@ package utils
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"website-gin/dto"
+	"website-gin/dto/response"
 	"website-gin/utils/errors"
 )
 
@@ -23,7 +23,7 @@ func HandleError(ctx *gin.Context, err interface{}) {
 		message = "未知错误"
 	}
 
-	ctx.JSON(http.StatusOK, dto.Result{
+	ctx.JSON(http.StatusOK, response.Result{
 		Success: false,
 		Code:    code,
 		Message: message,
