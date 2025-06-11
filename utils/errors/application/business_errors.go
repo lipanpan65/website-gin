@@ -4,6 +4,7 @@ import "website-gin/utils/errors"
 
 // 业务逻辑相关错误枚举
 var (
+	DataExisted         = errors.NewBusinessError("5000", "数据已存在，请勿重复创建")
 	DictExisted         = errors.NewBusinessError("4000", "字典已经存在")
 	ErrorCreateDict     = errors.NewBusinessError("500", "创建字典失败")
 	ErrorWrapperField   = errors.NewBusinessError("500", "包装字典属性失败")

@@ -10,10 +10,11 @@ import (
 )
 
 type TopicController struct {
-	topicService *services.TopicService
+	//topicService *services.TopicService
+	topicService services.TopicServiceInterface
 }
 
-func NewTopicController(topicService *services.TopicService) *TopicController {
+func NewTopicController(topicService services.TopicServiceInterface) *TopicController {
 	return &TopicController{
 		topicService: topicService,
 	}
@@ -29,6 +30,7 @@ func (c *TopicController) CreateTopic(ctx *gin.Context) {
 	topicVo, err := c.topicService.CreateTopic(&topicDTO)
 	if err != nil {
 		utils.HandleError(ctx, err)
+		return
 	}
 	utils.ResultSuccess(ctx, topicVo)
 }
@@ -83,5 +85,5 @@ func (c *TopicController) QueryTopics(ctx *gin.Context) {
 	}
 
 	// 返回带分页信息的成功响应
-	utils.ResultSuccessWithPagination(ctx, total, page, pageSize, topics)
+	utils.ResultSuccessWithPagination(ctx, int(total), page, pageSize, topics)
 }

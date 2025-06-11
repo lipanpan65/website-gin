@@ -4,6 +4,7 @@ import (
 	"errors"
 	"gorm.io/gorm"
 	"website-gin/internal/models"
+	"website-gin/internal/vo"
 )
 
 type TopicRepository struct {
@@ -41,7 +42,7 @@ func (r *TopicRepository) CreateTopic(topic *models.Topic) error {
 }
 
 // QueryTopics 根据条件查询 Topic
-func (r *TopicRepository) QueryTopics(conditions map[string]interface{}, page, pageSize int) ([]models.Topic, int, error) {
+func (r *TopicRepository) QueryTopics(conditions map[string]interface{}, page, pageSize int) ([]*vo.TopicVo, int64, error) {
 	var topics []models.Topic
 	var total int64
 
@@ -69,7 +70,19 @@ func (r *TopicRepository) QueryTopics(conditions map[string]interface{}, page, p
 		return nil, 0, err
 	}
 
-	return topics, int(total), nil
+	// 转换为 vo 类型
+	var topicVos []*vo.TopicVo
+	for _, topic := range topics {
+		topicVo := &vo.TopicVo{
+			Id:        topic.ID,
+			TopicName: topic.TopicName,
+			Enabled:   topic.Enable,
+			Remark:    topic.Remark,
+		}
+		topicVos = append(topicVos, topicVo)
+	}
+
+	return topicVos, total, nil
 }
 
 // QueryTopicByID 根据ID查询 Topic

@@ -10,12 +10,23 @@ import (
 )
 
 // TopicService 专题服务
+//type TopicService struct {
+//	topicRepo *repository.TopicRepository
+//}
+
+// NewTopicService 创建Topic服务实例
+//func NewTopicService(topicRepo *repository.TopicRepository) *TopicService {
+//	return &TopicService{
+//		topicRepo: topicRepo,
+//	}
+//}
+
 type TopicService struct {
 	topicRepo *repository.TopicRepository
 }
 
-// NewTopicService 创建Topic服务实例
-func NewTopicService(topicRepo *repository.TopicRepository) *TopicService {
+// NewTopicService 创建 Topic 服务实例，返回 TopicServiceInterface 接口类型
+func NewTopicService(topicRepo *repository.TopicRepository) TopicServiceInterface {
 	return &TopicService{
 		topicRepo: topicRepo,
 	}
@@ -23,24 +34,30 @@ func NewTopicService(topicRepo *repository.TopicRepository) *TopicService {
 
 // CreateTopic 创建Topic
 func (s *TopicService) CreateTopic(topicDTO *request.TopicDTO) (*vo.TopicVo, error) {
-	existingTopic, err := s.topicRepo.QueryTopicByTopicName(topicDTO.Name)
+	existingTopic, err := s.topicRepo.QueryTopicByTopicName(topicDTO.TopicName)
 	if err != nil {
 		return nil, err
 	}
 	if existingTopic != nil {
 		//return nil, fmt.Errorf("topic already exists")
-		return nil, application.ErrorCreateDict
+		return nil, application.DataExisted
 	}
 	topic := &models.Topic{
-		TopicName: topicDTO.Name,
+		TopicName: topicDTO.TopicName,
+		Enable:    topicDTO.Enable,
+		Remark:    topicDTO.Remark,
 	}
+
 	err = s.topicRepo.CreateTopic(topic)
 	if err != nil {
 		return nil, err
 	}
+
 	topicVo := &vo.TopicVo{
 		Id:        topic.ID,
 		TopicName: topic.TopicName,
+		Enabled:   topic.Enable,
+		Remark:    topic.Remark,
 	}
 	return topicVo, nil
 }
@@ -60,6 +77,6 @@ func (s *TopicService) QueryTopicByID(id uint) (*vo.TopicVo, error) {
 	return topicVo, nil
 }
 
-func (s *TopicService) QueryTopics(conditions map[string]interface{}, page, pageSize int) ([]models.Topic, int, error) {
+func (s *TopicService) QueryTopics(conditions map[string]interface{}, page, pageSize int) ([]*vo.TopicVo, int64, error) {
 	return s.topicRepo.QueryTopics(conditions, page, pageSize)
 }
