@@ -2,7 +2,7 @@ package services
 
 import (
 	"website-gin/dto/request"
-	"website-gin/internal/models"
+	"website-gin/internal/model"
 	"website-gin/internal/repository"
 	"website-gin/internal/vo"
 	"website-gin/utils/errors/application"
@@ -42,7 +42,7 @@ func (s *TopicService) CreateTopic(topicDTO *request.TopicDTO) (*vo.TopicVo, err
 		//return nil, fmt.Errorf("topic already exists")
 		return nil, application.DataExisted
 	}
-	topic := &models.Topic{
+	topic := &model.Topic{
 		TopicName: topicDTO.TopicName,
 		Enable:    topicDTO.Enable,
 		Remark:    topicDTO.Remark,

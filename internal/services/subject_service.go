@@ -1,10 +1,10 @@
 package services
 
 import (
-	"website-gin/internal/models"
+	"website-gin/internal/model"
 	"website-gin/internal/repository"
 )
 
-func CreateSubject(subject *models.Subject) error {
+func CreateSubject(subject *model.Subject) error {
 	return repository.CreateSubject(subject)
 }

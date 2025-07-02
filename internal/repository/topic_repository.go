@@ -3,7 +3,7 @@ package repository
 import (
 	"errors"
 	"gorm.io/gorm"
-	"website-gin/internal/models"
+	"website-gin/internal/model"
 	"website-gin/internal/vo"
 )
 
@@ -37,13 +37,13 @@ func NewTopicRepository(db *gorm.DB) *TopicRepository {
 }
 
 // CreateTopic 创建 Topic
-func (r *TopicRepository) CreateTopic(topic *models.Topic) error {
+func (r *TopicRepository) CreateTopic(topic *model.Topic) error {
 	return r.db.Create(topic).Error
 }
 
 // QueryTopics 根据条件查询 Topic
 func (r *TopicRepository) QueryTopics(conditions map[string]interface{}, page, pageSize int) ([]*vo.TopicVo, int64, error) {
-	var topics []models.Topic
+	var topics []model.Topic
 	var total int64
 
 	// 校验分页参数
@@ -56,7 +56,7 @@ func (r *TopicRepository) QueryTopics(conditions map[string]interface{}, page, p
 	query = buildQuery(query, conditions)
 
 	// 查询总记录数
-	err := query.Model(&models.Topic{}).Count(&total).Error
+	err := query.Model(&model.Topic{}).Count(&total).Error
 	if err != nil {
 		return nil, 0, err
 	}
@@ -86,8 +86,8 @@ func (r *TopicRepository) QueryTopics(conditions map[string]interface{}, page, p
 }
 
 // QueryTopicByID 根据ID查询 Topic
-func (r *TopicRepository) QueryTopicByID(id uint) (*models.Topic, error) {
-	var topic models.Topic
+func (r *TopicRepository) QueryTopicByID(id uint) (*model.Topic, error) {
+	var topic model.Topic
 	query := r.db
 	query = query.Where("id = ?", id)
 	err := query.First(&topic).Error
@@ -101,8 +101,8 @@ func (r *TopicRepository) QueryTopicByID(id uint) (*models.Topic, error) {
 }
 
 // QueryTopicByTopicName 根据名称查询Topic
-func (r *TopicRepository) QueryTopicByTopicName(topicName string) (*models.Topic, error) {
-	var topic models.Topic
+func (r *TopicRepository) QueryTopicByTopicName(topicName string) (*model.Topic, error) {
+	var topic model.Topic
 	query := r.db
 	query = query.Where("topic_name = ?", topicName)
 	err := query.First(&topic).Error
@@ -117,7 +117,7 @@ func (r *TopicRepository) QueryTopicByTopicName(topicName string) (*models.Topic
 
 // UpdateTopicByID 更新 Topic
 func (r *TopicRepository) UpdateTopicByID(id uint, updates map[string]interface{}) error {
-	record := r.db.Model(&models.Topic{}).Where("id = ?", id).Updates(updates)
+	record := r.db.Model(&model.Topic{}).Where("id = ?", id).Updates(updates)
 	if record.Error != nil {
 		return record.Error
 	}
@@ -129,7 +129,7 @@ func (r *TopicRepository) UpdateTopicByID(id uint, updates map[string]interface{
 
 // DeleteTopicByID 根据 ID 删除 Topic
 func (r *TopicRepository) DeleteTopicByID(id uint) error {
-	record := r.db.Where("id = ?", id).Delete(&models.Topic{})
+	record := r.db.Where("id = ?", id).Delete(&model.Topic{})
 	if record.Error != nil {
 		return record.Error
 	}

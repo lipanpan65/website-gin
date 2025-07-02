@@ -22,7 +22,7 @@ my-gin-project/
 ├── config/
 ├── controllers/
 ├── middleware/
-├── models/
+├── model/
 ├── repository/
 ├── routes/
 ├── services/
@@ -42,7 +42,7 @@ my-gin-project/
 ├── config/
 ├── controllers/
 ├── middleware/
-├── models/
+├── model/
 ├── repository/
 ├── routes/
 ├── services/
@@ -299,7 +299,7 @@ json
 ## 创建 model 类
 
 ```shell
-package models
+package model
 
 type Topic struct {
 	ID        int    `json:"id" gorm:"primaryKey"`

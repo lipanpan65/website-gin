@@ -2,13 +2,13 @@ package controllers
 
 import (
 	"github.com/gin-gonic/gin"
-	"website-gin/internal/models"
+	"website-gin/internal/model"
 	"website-gin/internal/services"
 	"website-gin/utils"
 )
 
 func CreateUser(c *gin.Context) {
-	var user models.User
+	var user model.User
 	if err := c.ShouldBindJSON(&user); err != nil {
 		utils.ResultError(c, nil)
 		return

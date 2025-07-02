@@ -28,7 +28,7 @@ func main() {
 	}
 	log.Println("Database initialized")
 	// 自动迁移数据库
-	//if err := db.AutoMigrate(&models.User{}); err != nil {
+	//if err := db.AutoMigrate(&model.User{}); err != nil {
 	//	log.Fatalf("Failed to migrate database: %v", err)
 	//}
 	//log.Println("Database migrated successfully")
