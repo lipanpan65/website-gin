@@ -5,6 +5,7 @@ import "time"
 type Topic struct {
 	ID        int    `json:"id" gorm:"primaryKey"`
 	TopicName string `json:"topic_name" gorm:"column:topic_name"`
+	Enable    int    `json:"enable" gorm:"column:enable"`
 	Remark    string `json:"remark" gorm:"column:remark"`
 }
 
