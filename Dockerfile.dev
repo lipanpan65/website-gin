@@ -1,0 +1,33 @@
+# 使用Go 1.22作为基础镜像
+FROM golang:1.22-alpine
+
+# 设置工作目录
+WORKDIR /app
+
+# 安装必要的系统依赖和热加载工具
+RUN apk add --no-cache \
+    git \
+    gcc \
+    musl-dev \
+    && go install github.com/pilu/fresh@latest
+
+# 复制go mod文件
+COPY go.mod go.sum ./
+
+# 下载依赖
+RUN go mod download
+
+# 复制源代码
+COPY . .
+
+
+# 暴露端口
+EXPOSE 8080
+
+# 设置环境变量
+ENV GO_ENV=dev
+ENV CGO_ENABLED=1
+
+# 启动热加载开发服务器
+CMD ["fresh"]
+
