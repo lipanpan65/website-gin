@@ -4,8 +4,7 @@ import (
 	stdErrors "errors" // 为标准库的 errors 包设置别名
 	"github.com/gin-gonic/gin"
 	"website-gin/utils"
-	customErrors "website-gin/utils/errors"               // 为自定义的 errors 包设置别名
-	infraErrors "website-gin/utils/errors/infrastructure" // 为 infrastructure 包设置别名
+	customErrors "website-gin/utils/errors" // 为自定义的 errors 包设置别名
 )
 
 // GlobalErrorHandler 全局异常处理中间件
@@ -28,7 +27,7 @@ func GlobalErrorHandler() gin.HandlerFunc {
 				if stdErrors.As(err, &baseErr) {
 					utils.ResultError(c, baseErr)
 				} else {
-					utils.ResultError(c, infraErrors.HTTPRequestTimeout)
+					utils.ResultError(c, customErrors.HTTPRequestTimeout)
 				}
 				c.Abort()
 			}

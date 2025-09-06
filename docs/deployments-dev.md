@@ -139,8 +139,10 @@ make watch             # 启动热重载开发模式 (监听文件变化自动�
 # Docker 环境管理
 make docker-build      # 构建Docker镜像
 make docker-dev        # 启动Docker开发环境 (构建并运行，支持热加载)
+make docker-debug      # 启动Docker调试环境 (支持远程调试)
 make docker-up         # 启动容器
 make docker-stop       # 停止并删除容器
+make docker-stop-debug # 停止调试容器
 make docker-clean      # 清理所有Docker资源
 make docker-logs       # 查看容器日志
 make docker-shell      # 进入Go容器shell
@@ -152,17 +154,32 @@ make docker-migrate    # 运行数据库迁移
 
 ### 启动 Docker 开发环境
 
+#### 热重载开发模式
 ```bash
 # 构建并启动完整的开发环境
 make docker-dev
 ```
 
+#### Docker调试模式
+```bash
+# 启动Docker调试环境
+make docker-debug
+```
+
 Docker 环境包含：
-- Go Gin 应用容器（支持热加载）
+- Go Gin 应用容器（支持热加载/调试）
 - MySQL 数据库容器
 - 端口映射：
   - Go 应用：`http://localhost:9899`
+  - 调试端口：`localhost:2345` (仅调试模式)
   - MySQL：`localhost:3306`
+
+#### Docker调试环境特性
+- **自动化管理**：自动构建、启动、停止调试容器
+- **代码同步**：实时挂载本地代码到容器
+- **网络隔离**：独立的Docker网络环境
+- **调试就绪**：Delve调试服务器自动启动
+- **容器命名**：调试容器名为`gin-debug`，便于管理
 
 ## 开发工具和配置
 
@@ -286,7 +303,11 @@ dlv version
 
 ### 调试方式
 
-项目支持两种本地调试方式：**直接调试**和**远程调试**。
+项目支持三种调试方式：**本地直接调试**、**本地远程调试**和**Docker远程调试**。
+
+- **本地直接调试**：在本地环境中直接启动调试，最简单
+- **本地远程调试**：本地启动调试服务器，支持热连接
+- **Docker远程调试**：在Docker容器中启动调试服务器，隔离环境
 
 #### 1. 直接调试（推荐新手）
 
@@ -349,7 +370,55 @@ func main() {
 - 🟢 适合长期开发调试
 - 🟡 需要额外启动调试服务器
 
-#### 3. F5按键调试选择
+#### 3. Docker远程调试（推荐团队开发）
+
+使用Docker容器中的Delve调试器，提供隔离的调试环境。
+
+**步骤：**
+1. **启动Docker调试环境**
+   ```bash
+   make docker-debug
+   ```
+   
+   系统会自动执行以下操作：
+   ```
+   🐛 启动Go Gin Docker调试环境...
+   📍 应用端口: 9899
+   🔍 调试端口: 2345 (Delve API)
+   🔄 停止现有容器...
+   🚀 启动调试容器...
+   ✅ 调试环境已启动！
+   ```
+
+2. **连接调试器**
+   - 在代码中设置断点
+   - 按 `F5` 选择 `🔍 Go Gin Remote Debug`
+   - 调试器连接到Docker容器中的应用
+
+3. **管理调试容器**
+   ```bash
+   # 查看调试日志
+   docker logs gin-debug
+   
+   # 停止调试环境
+   make docker-stop-debug
+   ```
+
+**特点：**
+- 🟢 完全隔离的调试环境
+- 🟢 与生产环境更接近
+- 🟢 支持热连接/断开调试器
+- 🟢 团队成员环境一致
+- 🟢 自动化容器管理
+- 🟡 需要Docker环境支持
+
+**适用场景：**
+- 团队协作开发
+- 环境依赖复杂的调试
+- 需要模拟生产环境
+- 多服务联调场景
+
+#### 4. F5按键调试选择
 
 **问题解决**：项目已解决多项目工作区中F5默认选择Django调试的问题。
 
@@ -423,6 +492,10 @@ func main() {
 - 远程调试端口：`2345` (Delve API服务器)
 - 数据库端口：`3306` (MySQL)
 
+**Docker调试端口映射**：
+- 本地 `9899` → 容器 `9899` (应用端口)
+- 本地 `2345` → 容器 `2345` (调试端口)
+
 #### 3. Delve调试器配置
 
 **调试器参数**：
@@ -445,6 +518,7 @@ dlv debug ./cmd/main.go \
 
 #### 1. API请求调试
 
+**本地调试：**
 在路由处理函数中设置断点：
 ```go
 // 在controllers中设置断点
@@ -455,8 +529,19 @@ func GetUsers(c *gin.Context) {
 }
 ```
 
+**Docker调试：**
+```bash
+# 启动Docker调试环境
+make docker-debug
+
+# 在Cursor中连接调试器，设置断点后：
+# 使用curl或Postman测试API
+curl http://localhost:9899/api/v1/users/
+```
+
 #### 2. 数据库查询调试
 
+**本地调试：**
 在数据库操作前后设置断点：
 ```go
 // 在数据库初始化时调试
@@ -466,8 +551,18 @@ if err != nil {
 }
 ```
 
+**Docker调试：**
+```bash
+# Docker环境中数据库连接调试
+make docker-debug
+
+# 查看容器内数据库连接状态
+docker logs gin-debug | grep -i database
+```
+
 #### 3. 中间件调试
 
+**本地调试：**
 在中间件函数中设置断点：
 ```go
 // 在middleware中调试请求处理
@@ -477,6 +572,45 @@ func GlobalErrorHandler() gin.HandlerFunc {
         c.Next()  // <- 断点位置
     }
 }
+```
+
+**Docker调试：**
+```bash
+# Docker环境中中间件调试
+make docker-debug
+
+# 监听容器日志查看中间件执行
+docker logs gin-debug -f
+```
+
+#### 4. Docker特有调试场景
+
+**容器环境变量调试：**
+```bash
+# 检查容器内环境变量
+docker exec gin-debug env | grep GO_
+
+# 检查配置文件加载
+docker exec gin-debug ls -la config/
+```
+
+**网络连接调试：**
+```bash
+# 检查容器网络状态
+docker inspect gin-debug | grep -A 10 NetworkMode
+
+# 测试容器间通信
+docker exec gin-debug ping db-dev
+```
+
+**文件挂载调试：**
+```bash
+# 检查代码挂载是否正常
+docker exec gin-debug ls -la /app/
+
+# 验证代码同步
+echo "// test comment" >> controllers/user.go
+docker exec gin-debug grep -n "test comment" /app/controllers/user.go
 ```
 
 ## 常见开发任务
@@ -732,7 +866,64 @@ pkill -f dlv
 }
 ```
 
-#### 6. 热重载不工作
+#### 10. Docker调试环境问题
+
+**问题1**：`make docker-debug` 执行失败
+
+**解决方案**：
+```bash
+# 检查Docker是否运行
+docker info
+
+# 检查网络是否存在
+docker network ls | grep website-dev-network
+
+# 如果网络不存在，创建网络
+docker network create website-dev-network
+
+# 清理可能冲突的容器
+docker stop gin-debug 2>/dev/null || true
+docker rm gin-debug 2>/dev/null || true
+
+# 重新尝试
+make docker-debug
+```
+
+**问题2**：Docker调试容器无法连接
+
+**解决方案**：
+```bash
+# 检查容器状态
+docker ps | grep gin-debug
+
+# 查看容器日志
+docker logs gin-debug
+
+# 检查端口映射
+docker port gin-debug
+
+# 确认调试服务器是否启动
+curl -s http://localhost:9899 || echo "应用未响应"
+```
+
+**问题3**：端口占用冲突
+
+**解决方案**：
+```bash
+# 检查端口占用
+lsof -i :9899
+lsof -i :2345
+
+# 停止占用端口的进程
+make docker-stop-debug
+make docker-stop
+
+# 或者手动清理
+docker stop $(docker ps -q --filter "publish=9899") 2>/dev/null || true
+docker stop $(docker ps -q --filter "publish=2345") 2>/dev/null || true
+```
+
+#### 11. 热重载不工作
 
 **问题**：文件修改后应用没有自动重启
 

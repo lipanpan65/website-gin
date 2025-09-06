@@ -5,13 +5,13 @@ import (
 	"net/http"
 	"testing"
 	"website-gin/utils"
-	"website-gin/utils/errors/application"
+	"website-gin/utils/errors"
 )
 
 func TestResultError(t *testing.T) {
 	r := SetupTestRouter()
 	r.GET("/test-error", func(c *gin.Context) {
-		utils.ResultError(c, application.DictExisted)
+		utils.ResultError(c, errors.DictExisted)
 	})
 
 	w := PerformRequest(r, "GET", "/test-error")

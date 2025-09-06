@@ -4,8 +4,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"website-gin/config"
+	"website-gin/internal/handlers"
+	"website-gin/internal/repository"
+	"website-gin/internal/routes"
+	"website-gin/internal/services"
 	"website-gin/middleware"
-	"website-gin/routes"
 )
 
 /**
@@ -33,11 +36,16 @@ func main() {
 	//}
 	//log.Println("Database migrated successfully")
 
+	// 初始化依赖注入
+	topicRepo := repository.NewTopicRepository(db)
+	topicService := services.NewTopicService(topicRepo)
+	topicHandler := handlers.NewTopicHandler(topicService)
+	
 	// 初始化路由
 	r := gin.Default()
 	// 使用全局异常处理中间件
 	r.Use(middleware.GlobalErrorHandler())
-	routes.SetupRouter(r, db)
+	routes.SetupRouter(r, topicHandler)
 	log.Println("Routes initialized")
 
 	// 使用配置中的 Port 启动服务器
